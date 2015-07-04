@@ -3,6 +3,8 @@ CAMI - Common Admin Mod Interface.
 Makes admin mods intercompatible and provides an abstract privilege interface
 for third party addons.
 
+IMPORTANT: This is a draft script. It is very much WIP.
+
 Follows the specification on this page:
 https://docs.google.com/document/d/1QIRVcAgZfAYf1aBl_dNV_ewR6P25wze2KmUVzlbFgMI
 
