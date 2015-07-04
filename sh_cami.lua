@@ -307,6 +307,8 @@ local defaultAccessHandler = {["CAMI.PlayerHasAccess"] =
 
 
 		if not priv then return callback(fallback, "Fallback.") end
+
+		return CAMI.UsergroupInherits(actorPly:GetUserGroup(), priv.MinAccess)
 	end,
 	["CAMI.SteamIDHasAccess"] =
 	function(_, _, callback)
