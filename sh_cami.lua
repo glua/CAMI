@@ -89,13 +89,13 @@ CAMI.RegisterUsergroup{
 -- Default admin usergroup
 CAMI.RegisterUsergroup{
 	Name = "admin",
-	Inherits = "admin"
+	Inherits = "user"
 }
 
 -- Default superadmin usergroup
 CAMI.RegisterUsergroup{
 	Name = "superadmin",
-	Inherits = "superadmin"
+	Inherits = "admin"
 }
 
 --[[
