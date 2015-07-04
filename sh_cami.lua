@@ -171,10 +171,15 @@ function CAMI.UsergroupInherits(usergroupName1, usergroupName2)
 	repeat
 		if usergroupName1 == usergroupName2 then return true end
 
-		usergroupName1 = usergroups[usergroupName1].Inherits
-	until usergroups[usergroupName1].Inherits == usergroupName1
+		usergroupName1 = usergroups[usergroupName1] and
+						 usergroups[usergroupName1].Inherits or
+						 usergroupName1
+	until usergroups[usergroupName1] and
+		  usergroups[usergroupName1].Inherits == usergroupName1
 
-	return usergroupName1 == usergroupName2
+	-- One can only be sure the usergroup inherits from user if the
+	-- usergroup isn't registered.
+	return usergroupName1 == usergroupName2 or usergroupName2 == "user"
 end
 
 --[[
