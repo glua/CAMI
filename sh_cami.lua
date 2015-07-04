@@ -74,6 +74,7 @@ CAMI.RegisterUsergroup
 function CAMI.RegisterUsergroup(usergroup)
 	usergroups[usergroup.Name] = usergroup
 
+	hook.Call("CAMI.OnUsergroupRegistered", nil, usergroup)
 	return usergroup
 end
 
@@ -114,7 +115,10 @@ CAMI.UnregisterUsergroup
 function CAMI.UnregisterUsergroup(usergroupName)
 	if not usergroups[usergroupName] then return false end
 
+	local usergroup = usergroups[usergroupName]
 	usergroups[usergroupName] = nil
+
+	hook.Call("CAMI.OnUsergroupUnregistered", nil, usergroup)
 
 	return true
 end
@@ -191,6 +195,8 @@ CAMI.RegisterPrivilege
 function CAMI.RegisterPrivilege(privilege)
 	privileges[privilege.Name] = privilege
 
+	hook.Call("CAMI.OnPrivilegeRegistered", nil, privilege)
+
 	return privilege
 end
 
@@ -213,7 +219,10 @@ CAMI.UnregisterPrivilege
 function CAMI.UnregisterPrivilege(privilegeName)
 	if not privileges[privilegeName] then return false end
 
+	local privilege = privileges[privilegeName]
 	privileges[privilegeName] = nil
+
+	hook.Call("CAMI.OnPrivilegeUnregistered", nil, privilege)
 
 	return true
 end
@@ -264,10 +273,15 @@ CAMI.PlayerHasAccess
 			Optional.
 			Table containing extra information.
 			Officially supported members:
+				Fallback
+					string
+					Either of user/admin/superadmin. When no admin mod replies,
+					the decision is based on the admin status of the user.
+					Defaults to admin if not given.
 				IgnoreImmunity
 					bool
 					Ignore any immunity mechanisms an admin mod might have.
-				commandArguments
+				CommandArguments
 					table
 					Extra arguments that were given to the privilege command.
 
@@ -275,7 +289,32 @@ CAMI.PlayerHasAccess
 		None, the answer is given in the callback function in order to allow
 		for the admin mod to perform e.g. a database lookup.
 ]]
-function CAMI.PlayerHasAccess(actorPly, privilegeName, targetPly, extraInfoTbl)
+-- Default access handler
+local defaultAccessHandler = {["CAMI.PlayerHasAccess"] =
+	function(actorPly, privilegeName, callback, _, extraInfoTbl)
+		if not IsValid(actorPly) then return callback(false, "Fallback.") end
+
+		local priv = privileges[privilegeName]
+
+		local fallback =
+			(not extraInfoTbl or not extraInfoTbl.Fallback) and
+				actorPly:IsAdmin() or
+			extraInfoTbl.Fallback == "user" and true or
+			extraInfoTbl.Fallback == "admin" and actorPly:IsAdmin() or
+			extraInfoTbl.Fallback == "superadmin" and actorPly:IsSuperAdmin()
+
+
+		if not priv then return callback(fallback, "Fallback.") end
+	end,
+	["CAMI.SteamIDHasAccess"] =
+	function(_, _, callback)
+		return callback(false, "No information available.")
+	end
+}
+function CAMI.PlayerHasAccess(actorPly, privilegeName, callback, targetPly,
+extraInfoTbl)
+	hook.Call("CAMI.PlayerHasAccess", defaultAccessHandler, actorPly,
+		privilegeName, targetPly, extraInfoTbl)
 end
 
 --[[
@@ -307,7 +346,7 @@ CAMI.SteamIDHasAccess
 				IgnoreImmunity
 					bool
 					Ignore any immunity mechanisms an admin mod might have.
-				commandArguments
+				CommandArguments
 					table
 					Extra arguments that were given to the privilege command.
 
@@ -317,5 +356,29 @@ CAMI.SteamIDHasAccess
 ]]
 function CAMI.SteamIDHasAccess(actorSteam, privilegeName, targetSteam,
 extraInfoTbl)
+	hook.Call("CAMI.SteamIDHasAccess", defaultAccessHandler, actorSteam,
+		privilegeName, targetSteam, extraInfoTbl)
+end
 
+--[[
+CAMI.SignalUserGroupChanged
+	Signify that your admin mod has changed the usergroup of a player. This
+	function communicates to other admin mods what it thinks the usergroup
+	of a player should be.
+
+	Listen to the hook to receive the usergroup changes of other admin mods.
+
+	Parameters:
+		ply
+			Player
+			The player for which the usergroup is changed
+		old
+			string
+			The previous usergroup of the player.
+		new
+			string
+			The new usergroup of the player.
+]]
+function CAMI.SignalUserGroupChanged(ply, old, new)
+	hook.Call("CAMI.PlayerUsergroupChanged", nil, ply, old, new)
 end
