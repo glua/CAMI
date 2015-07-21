@@ -41,7 +41,7 @@ Structures:
 ]]
 
 -- Version number in YearMonthDay format.
-local version = 20150721
+local version = 20150704
 
 if CAMI and CAMI.Version > version then return end
 
@@ -431,7 +431,10 @@ CAMI.SignalUserGroupChanged
 		new
 			string
 			The new usergroup of the player.
+		source
+			any
+			Identifier for your own admin mod. Can be anything.
 ]]
-function CAMI.SignalUserGroupChanged(ply, old, new)
+function CAMI.SignalUserGroupChanged(ply, old, new, source)
 	hook.Call("CAMI.PlayerUsergroupChanged", nil, ply, old, new)
 end
