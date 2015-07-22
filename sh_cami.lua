@@ -43,7 +43,7 @@ Structures:
 -- Version number in YearMonthDay format.
 local version = 20150722
 
-if CAMI and CAMI.Version > version then return end
+if CAMI and CAMI.Version >= version then return end
 
 CAMI = CAMI or {}
 CAMI.Version = version
