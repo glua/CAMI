@@ -28,6 +28,10 @@ Structures:
 		MinAccess
 			string
 			One of the following three: user/admin/superadmin
+		Description
+			string
+			optional
+			A text describing the purpose of the privilege
 		HasAccess
 			function(
 				privilege :: CAMI_PRIVILEGE,
