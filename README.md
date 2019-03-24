@@ -39,7 +39,7 @@ All functions, hooks and data structures are shared, which thus exist in both th
 - _(optional)_ `HasAccess` :: `function(privilege :: CAMI_PRIVILEGE, actor :: Player, target :: Player) :: bool, string`
 
 ## Functions
-This section lists the functions that CAMI provides. It should be used as a quick reference. Detailed descriptions of the functions can be found in the [sh_cami.lua source file](./sh_cami.lua).
+This section lists the functions that CAMI provides. It should be used as a quick reference. Detailed descriptions of the functions can be found in the [sh_cami.lua source file](./lua/autorun/sh_cami.lua).
 
 The ‘::’ indicates the types of the parameters and the return values of the functions. Parameters in square brackets are optional.
 
@@ -98,7 +98,7 @@ CAMI.SteamIDUsergroupChanged(steamId :: string, from :: string, to :: string, so
 ```
 
 # What to implement
-Both admin mods and third party addons are to ship the [sh_cami.lua source file](./sh_cami.lua), shared.  
+Both admin mods and third party addons are to ship the [sh_cami.lua source file](./lua/autorun/sh_cami.lua), shared.  
 Alongside with that, the following things should be implemented:
 
 ## Admin mods
