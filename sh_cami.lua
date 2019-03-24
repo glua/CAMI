@@ -6,7 +6,7 @@ Makes admin mods intercompatible and provides an abstract privilege interface
 for third party addons.
 
 Follows the specification on this page:
-https://docs.google.com/document/d/1QIRVcAgZfAYf1aBl_dNV_ewR6P25wze2KmUVzlbFgMI
+https://github.com/glua/CAMI/blob/master/README.md
 
 Structures:
     CAMI_USERGROUP, defines the charactaristics of a usergroup:
