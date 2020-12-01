@@ -357,7 +357,7 @@ CAMI.PlayerHasAccess
 ]]
 -- Default access handler
 local defaultAccessHandler = {["CAMI.PlayerHasAccess"] =
-    function(_, actorPly, privilegeName, callback, _, extraInfoTbl)
+    function(_, actorPly, privilegeName, callback, targetPly, extraInfoTbl)
         -- The server always has access in the fallback
         if not IsValid(actorPly) then return callback(true, "Fallback.") end
 
@@ -372,11 +372,16 @@ local defaultAccessHandler = {["CAMI.PlayerHasAccess"] =
 
         if not priv then return callback(fallback, "Fallback.") end
 
-        callback(
+        local hasAccess =
             priv.MinAccess == "user" or
             priv.MinAccess == "admin" and actorPly:IsAdmin() or
             priv.MinAccess == "superadmin" and actorPly:IsSuperAdmin()
-            , "Fallback.")
+
+        if hasAccess and priv.HasAccess then
+            hasAccess = priv:HasAccess(actorPly, targetPly)
+        end
+
+        callback(hasAccess, "Fallback.")
     end,
     ["CAMI.SteamIDHasAccess"] =
     function(_, _, _, callback)
