@@ -28,7 +28,7 @@ CAMI.Version = version
 --- defines the charactaristics of a usergroup
 --- @field Name string @The name of the usergroup
 --- @field Inherits string @The name of the usergroup this usergroup inherits from
---- @field CAMI_Source any @The source specified by the admin mod which registered this usergroup (can be anything)
+--- @field CAMI_Source string @The source specified by the admin mod which registered this usergroup (converted to a string)
 
 --- @class CAMI_PRIVILEGE
 --- defines the charactaristics of a privilege
@@ -81,7 +81,7 @@ local privileges = CAMI.GetPrivileges and CAMI.GetPrivileges() or {}
 --- @param source any @Identifier for your own admin mod. Can be anything.
 --- @return CAMI_USERGROUP @The usergroup given as an argument
 function CAMI.RegisterUsergroup(usergroup, source)
-    usergroup.CAMI_Source = source
+    usergroup.CAMI_Source = tostring(source)
     usergroups[usergroup.Name] = usergroup
 
     hook.Call("CAMI.OnUsergroupRegistered", nil, usergroup, source)
