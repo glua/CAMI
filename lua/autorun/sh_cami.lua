@@ -81,7 +81,7 @@ local privileges = CAMI.GetPrivileges and CAMI.GetPrivileges() or {}
 --- @param source any @Identifier for your own admin mod. Can be anything.
 --- @return CAMI_USERGROUP @The usergroup given as an argument
 function CAMI.RegisterUsergroup(usergroup, source)
-    if source then 
+    if source then
         usergroup.CAMI_Source = tostring(source)
     end
     usergroups[usergroup.Name] = usergroup
