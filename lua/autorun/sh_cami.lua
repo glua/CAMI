@@ -16,7 +16,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 ]]
 
 -- Version number in YearMonthDay format.
-local version = 20201130
+local version = 20211019
 
 if CAMI and CAMI.Version >= version then return end
 
@@ -28,6 +28,7 @@ CAMI.Version = version
 --- defines the charactaristics of a usergroup
 --- @field Name string @The name of the usergroup
 --- @field Inherits string @The name of the usergroup this usergroup inherits from
+--- @field CAMI_Source string @The source specified by the admin mod which registered this usergroup (if any, converted to a string)
 
 --- @class CAMI_PRIVILEGE
 --- defines the charactaristics of a privilege
@@ -52,15 +53,18 @@ end
 local usergroups = CAMI.GetUsergroups and CAMI.GetUsergroups() or {
     user = {
         Name = "user",
-        Inherits = "user"
+        Inherits = "user",
+        CAMI_Source = "Garry's Mod",
     },
     admin = {
         Name = "admin",
-        Inherits = "user"
+        Inherits = "user",
+        CAMI_Source = "Garry's Mod",
     },
     superadmin = {
         Name = "superadmin",
-        Inherits = "admin"
+        Inherits = "admin",
+        CAMI_Source = "Garry's Mod",
     }
 }
 
@@ -77,6 +81,9 @@ local privileges = CAMI.GetPrivileges and CAMI.GetPrivileges() or {}
 --- @param source any @Identifier for your own admin mod. Can be anything.
 --- @return CAMI_USERGROUP @The usergroup given as an argument
 function CAMI.RegisterUsergroup(usergroup, source)
+    if source then
+        usergroup.CAMI_Source = tostring(source)
+    end
     usergroups[usergroup.Name] = usergroup
 
     hook.Call("CAMI.OnUsergroupRegistered", nil, usergroup, source)
