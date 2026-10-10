@@ -50,7 +50,7 @@ end
 --- Contains the registered CAMI_USERGROUP usergroup structures.
 --- Indexed by usergroup name.
 --- @type CAMI_USERGROUP[]
-local usergroups = CAMI.GetUsergroups and CAMI.GetUsergroups() or {
+local rootGroups = {
     user = {
         Name = "user",
         Inherits = "user",
@@ -67,6 +67,7 @@ local usergroups = CAMI.GetUsergroups and CAMI.GetUsergroups() or {
         CAMI_Source = "Garry's Mod",
     }
 }
+local usergroups = CAMI.GetUsergroups and CAMI.GetUsergroups() or table.Copy(rootGroups)
 
 --- Contains the registered CAMI_PRIVILEGE privilege structures.
 --- Indexed by privilege name.
@@ -158,14 +159,14 @@ end
 --- @param usergroupName string @The name of the usergroup
 --- @return "'user'" | "'admin'" | "'superadmin'" @The name of the root usergroup
 function CAMI.InheritanceRoot(usergroupName)
-    if not usergroups[usergroupName] then return end
+    if not usergroups[usergroupName] then return "user" end
 
-    local inherits = usergroups[usergroupName].Inherits
-    while inherits ~= usergroups[usergroupName].Inherits do
-        usergroupName = usergroups[usergroupName].Inherits
+    local inherits = usergroupName
+    while usergroups[inherits] and inherits ~= usergroups[inherits].Inherits and (not rootGroups[inherits]) do
+        inherits = usergroups[inherits].Inherits
     end
 
-    return usergroupName
+    return inherits
 end
 
 --- Registers an addon privilege with CAMI.
